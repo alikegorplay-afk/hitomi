@@ -42,6 +42,7 @@ class Config:
     """
     
     BOT_TOKEN: str = os.getenv("BOT_TOKEN")
+    SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL"))
     MAX_TRY: int = 5
     MAX_CONCURENTS: int = 3
     BASE_PARSER: str = 'html.parser'
