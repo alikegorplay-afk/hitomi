@@ -5,13 +5,13 @@ from loguru import logger
 from src.bot import start_bot
 from src.core.config import config
 
-#logger.remove()
-#logger.add(
-#    "logs.log",
-#    format = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-#    level="INFO",
-#    rotation="10 MB",
-#)
+logger.remove()
+logger.add(
+    "logs.log",
+    format = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+    level="INFO",
+    rotation="10 MB",
+)
 
 async def main():
     async with aiohttp.ClientSession(

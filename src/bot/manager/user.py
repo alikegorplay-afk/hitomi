@@ -52,6 +52,6 @@ class UserManager:
                 if not len(mangas): continue # skip empty domains
                 text = create_content(domain, mangas)
                 
-                tasks.extend([self.bot.send_message(user_id, text) for user_id in self.users])
+                tasks.extend([self.bot.send_message(user_id, text, parse_mode="HTML") for user_id in self.users])
                 
         await asyncio.gather(*tasks)
