@@ -1,5 +1,6 @@
 from ..manganotif.core.base import BaseSpider
 from ..manganotif.core.models import MiniManga
+from loguru import logger
 
 class FindNewManager:
     def __init__(self, spider: BaseSpider):
@@ -15,6 +16,10 @@ class FindNewManager:
         new_manga: list[MiniManga] = []
         
         mangas = await self.spider.get_last()
+        if not mangas:
+            logger.warning("Не удалось получить манги")
+            return []
+            
         for manga in mangas:
             if manga.id not in self._used_ids:
                 self._used_ids.add(manga.id)

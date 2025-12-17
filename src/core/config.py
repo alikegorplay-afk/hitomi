@@ -3,12 +3,32 @@ import os
 from pathlib import Path
 from dataclasses import dataclass
 
+from aiohttp import BasicAuth
 from dotenv import load_dotenv
-
+from loguru import logger
 load_dotenv()
 
 @dataclass
-class Config:
+class ProxyConfig:
+    PROXY: str | None = os.getenv("PROXY")
+    PROXY_LOGIN: str | None = os.getenv("PROXY_LOGIN")
+    PROXY_PASSWORD: str | None = os.getenv("PROXY_PASSWORD")
+    
+    def get_proxy(self) -> dict[str, str | BasicAuth]:
+        if self.PROXY and self.PROXY_LOGIN and self.PROXY_PASSWORD:
+            logger.info("Обнаружен прокси")
+            return {
+                "proxy": self.PROXY,
+                "proxy_auth": BasicAuth(self.PROXY_LOGIN, self.PROXY_PASSWORD)
+            }
+        else:
+            logger.info("Прокси отсутствует")
+            return {}
+
+@dataclass
+class Config(
+    ProxyConfig
+):
     """
     Класс конфигурации приложения с настройками бота и парсинга.
 
@@ -48,6 +68,7 @@ class Config:
     BASE_PARSER: str = 'html.parser'
     SAVE_DOMAIN_PATH: Path = Path('data')
     FILE_NAME: str = "domains.json"
+    
 
     def __post_init__(self):
         """

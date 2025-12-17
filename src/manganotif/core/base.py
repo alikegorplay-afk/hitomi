@@ -36,7 +36,7 @@ class BaseSpider(ABC):
         """Абстрактный метод для получение ифнормации об тайтле"""
 
     @abstractmethod
-    async def get_last(self) -> list[MiniManga]:
+    async def get_last(self) -> list[MiniManga] | None:
         """Абстрактный метод для получение последней манги"""
     
     async def get_full_last(self) -> list[Manga]:
