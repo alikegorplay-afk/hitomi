@@ -45,8 +45,7 @@ class UserManager:
         tasks = []
         
         if not all([True if x else False for x in data.values()]):
-            #NOTE: Ничего не найдено DEBUG
-            tasks = [self.bot.send_message(user_id, "Ничё нету сучка!") for user_id in self.users]
+            return
         
         else:
             for domain, mangas in data.items():
