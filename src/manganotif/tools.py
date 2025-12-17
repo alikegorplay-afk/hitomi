@@ -1,9 +1,8 @@
 from functools import wraps
-from typing import Callable, Any
 from .core.errors import RequiredAttributeError
 
 
-def required(func: Callable[..., Any]) -> Callable[..., Any]:
+def required(func):
     """
     Декоратор, который проверяет, что декорируемая функция возвращает значение, отличное от None.
 

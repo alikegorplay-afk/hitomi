@@ -13,6 +13,7 @@ class BossManager:
         ]
     
     async def find_new(self):
+        """Ищет новые манги."""
         tasks = {spider.spider.DOMEN: spider.get_new() for spider in self.spiders}
         results = await asyncio.gather(*tasks.values())
         return dict(zip(tasks.keys(), results))

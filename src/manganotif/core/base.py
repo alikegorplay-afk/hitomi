@@ -6,6 +6,7 @@ from typing import LiteralString
 
 import aiohttp
 from loguru import logger
+from bs4 import BeautifulSoup
 
 from ...core.config import config
 from .models import Manga, MiniManga
@@ -82,7 +83,7 @@ class BaseSpider(ABC):
             for indx in range(1, self.max_try + 1):
                 logger.info(f"Попытка получить данные (url={url}, method={method})")
                 try:
-                    async with self.client.request(method, url, *args, **kwargs) as response:
+                    async with self.client.request(method, url, *args, **kwargs, allow_redirects=True) as response:
                         response.raise_for_status()
                         logger.success(f"Удалось получить данные (url={url}, status={response.status})")
                         return await response.text()
@@ -93,6 +94,14 @@ class BaseSpider(ABC):
                     logger.error(f"Не удалось получит данные (try-num={indx}, error={e})")
                     
         logger.error(f"Не удалось получить данные (max-try={self.max_try}, url={url})")
+
+    async def _get_soup(self, url: str) -> BeautifulSoup | None:
+        response = await self.get_text(url)
+        if response is None:
+            logger.warning(f"Не удалось последние манги (url={self.DOMEN})")
+            return
+        
+        return BeautifulSoup(response, self.parser)
 
     def _check(self):
         """Обязательные тесты перед инцилизацией"""

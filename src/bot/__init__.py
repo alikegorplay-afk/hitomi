@@ -2,9 +2,15 @@
 
 from aiohttp import ClientSession
 from aiogram import Bot, Dispatcher
+from aiogram.types import BotCommand
 
 from .handlers import get_handlers
 from ..core.config import config
+
+commands = [
+    BotCommand(command="start", description="Приветствие"),
+    BotCommand(command="help", description="Получить справку")
+]
 
 def get_bot(session: ClientSession) ->  tuple[Bot, Dispatcher]:
     
@@ -28,5 +34,6 @@ async def start_bot(session: ClientSession):
         await start_bot()
     """
     bot, dp = get_bot(session)
+    await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

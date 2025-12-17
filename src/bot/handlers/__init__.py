@@ -23,6 +23,14 @@ COMMANDS = [
 ]
 
 def get_handlers(session: aiohttp.ClientSession) -> list[Router]:
+    """Главная точка входа которая возращает все роутеры
+
+    Args:
+        session (aiohttp.ClientSession): Сессия aiohttp.
+
+    Returns:
+        list[Router]: Роуты.
+    """
     manager = BossManager(session)
     get_new_router = getnew_router(manager)
     

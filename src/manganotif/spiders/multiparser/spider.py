@@ -22,11 +22,3 @@ class MultiMangaSpider(BaseSpider):
     async def get_popular(self):
         soup = await self._get_soup(self.DOMEN)
         return parse_popular(soup, self.DOMEN) if soup else None
-    
-    async def _get_soup(self, url: str) -> BeautifulSoup | None:
-        response = await self.get_text(url)
-        if response is None:
-            logger.warning(f"Не удалось последние манги (url={self.DOMEN})")
-            return
-        
-        return BeautifulSoup(response, self.parser)
