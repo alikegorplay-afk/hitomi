@@ -3,7 +3,6 @@ import asyncio
 import aiohttp
 from loguru import logger
 from src.bot import start_bot
-from src.manganotif.spiders.hentaio.spider import HentaIoSpider
 
 async def main():
     async with aiohttp.ClientSession() as session:

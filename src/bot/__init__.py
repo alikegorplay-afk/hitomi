@@ -1,9 +1,12 @@
 """ТГ Бот, для манги"""
+import asyncio
 
 from aiohttp import ClientSession
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
 
+from ..manager.bossmanager import BossManager
+from .manager import UserManager
 from .handlers import get_handlers
 from ..core.config import config
 
@@ -12,16 +15,26 @@ commands = [
     BotCommand(command="help", description="Получить справку")
 ]
 
-def get_bot(session: ClientSession) ->  tuple[Bot, Dispatcher]:
-    
+def get_bot(manager: BossManager) ->  tuple[Bot, Dispatcher, UserManager]:
     dp = Dispatcher()
     bot = Bot(config.BOT_TOKEN)
+    user_manager  = UserManager(bot, manager)
     
     dp.include_routers(  # NOTE: Единый вход для добавление новых роутов.
-        *get_handlers(session)
+        *get_handlers(manager, user_manager)
     )
     
-    return bot, dp
+    return bot, dp, user_manager
+
+async def start_check(user_manager: UserManager):
+    """Начинаетс вечную проверку
+
+    Args:
+        user_manager (UserManager): Менеджер пользователей
+    """
+    while True:
+        await user_manager.send_all()
+        await asyncio.sleep(config.SCAN_INTERVAL)
 
 async def start_bot(session: ClientSession):
     """
@@ -33,7 +46,13 @@ async def start_bot(session: ClientSession):
     Пример использования:
         await start_bot()
     """
-    bot, dp = get_bot(session)
+    manager = BossManager(session)
+    bot, dp, user_manager = get_bot(manager)
+    
     await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)
+    
+    await asyncio.gather(
+        dp.start_polling(bot),
+        start_check(user_manager)
+    )

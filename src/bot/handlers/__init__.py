@@ -4,17 +4,15 @@ __all__ = [
     "COMMANDS",
     "get_handlers"
 ]
-
-import aiohttp
 from aiogram import Router
 
-from .start import router as start_router
-from .sendnew import router as sendnew_router
-from .toolrouter import router as tool_router
+from .start import user_router as start_router
+from .sendnew import sendnew_router as sendnew_router
+from .toolrouter import get_tool_router as tool_router
 from .getnew import getnew_router
 
 from ...manager.bossmanager import BossManager
-
+from ..manager import UserManager
 COMMANDS = [
     "start",
     "help",
@@ -22,21 +20,19 @@ COMMANDS = [
     "getnew"
 ]
 
-def get_handlers(session: aiohttp.ClientSession) -> list[Router]:
+def get_handlers(manager: BossManager, user_manager: UserManager) -> list[Router]:
     """Главная точка входа которая возращает все роутеры
 
     Args:
-        session (aiohttp.ClientSession): Сессия aiohttp.
+        manager (BossManager): Менеджер пауков.
 
     Returns:
         list[Router]: Роуты.
     """
-    manager = BossManager(session)
-    get_new_router = getnew_router(manager)
     
     return [
-        start_router,
-        get_new_router,
-        sendnew_router,
-        tool_router
+        start_router(user_manager),
+        getnew_router(manager, user_manager),
+        sendnew_router(user_manager),
+        tool_router(user_manager)
     ]

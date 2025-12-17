@@ -3,6 +3,7 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from loguru import logger
 
+from ..manager import UserManager
 from ...manager.bossmanager import BossManager
 from ...manganotif.core.models import MiniManga
 
@@ -23,8 +24,7 @@ def create_content(domain: str, mangas: list[MiniManga]) -> str:
         f"<b>Первые {len(mangas[:3])} манг:</b>"
         f"\n{''.join([f'• <a href=\"{manga.url}\">{manga.id} - {manga.title[:30]}</a>\n' for manga in mangas[:3]])}"
     )
-
-def getnew_router(manager: BossManager):
+def getnew_router(manager: BossManager, user_manager: UserManager):
     """
     Создаёт и возвращает Router с обработчиком команды /getnew.
     """
@@ -33,6 +33,7 @@ def getnew_router(manager: BossManager):
     @router.message(Command("getnew"))
     async def getnew_handler(msg: Message):
         logger.info(f"Запрос на ручную проверку (chat_id={msg.chat.id})")
+        user_manager.add_user(msg.chat.id)
         data = await manager.find_new()
         if not all([True if x else False for x in data.values()]):
             await msg.answer("На данный момент новых данных нет — всё уже обработано!")
