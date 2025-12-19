@@ -1,7 +1,7 @@
 import os
 
 from pathlib import Path
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from aiohttp import BasicAuth
 from dotenv import load_dotenv
@@ -27,7 +27,12 @@ class ProxyConfig:
 
 @dataclass
 class UserConfig:
-    USERS: list[int] = [int(x) for x in os.getenv("START_CHATS").split(',') if x.isdigit()] if os.getenv("START_CHATS") else []
+    USERS: list[int] = field(
+        default_factory=lambda: [
+            int(x) for x in os.getenv("START_CHATS", "").split(',') 
+            if x.strip().isdigit()
+        ] if os.getenv("START_CHATS") else []
+    )
 
 @dataclass
 class Config(
