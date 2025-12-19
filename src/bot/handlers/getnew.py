@@ -31,18 +31,18 @@ def getnew_router(manager: BossManager, user_manager: UserManager):
     router = Router()
 
     @router.message(Command("getnew"))
-    async def getnew_handler(msg: Message):
-        logger.info(f"Запрос на ручную проверку (chat_id={msg.chat.id})")
-        user_manager.add_user(msg.chat.id)
+    async def getnew_handler(message: Message):
+        logger.info(f"Запрос на ручную проверку (chat_id={message.chat.id})")
+        user_manager.add_user(message.chat.id)
         data = await manager.find_new()
         if not all([True if x else False for x in data.values()]):
-            await msg.answer("На данный момент новых данных нет — всё уже обработано!")
+            await message.answer("На данный момент новых данных нет — всё уже обработано!")
             
         else:
             for domain, mangas in data.items():
                 if not len(mangas): continue # skip empty domains
                 text = create_content(domain, mangas)
                 
-                await msg.answer(text, parse_mode="HTML")
+                await message.answer(text, parse_mode="HTML")
 
     return router

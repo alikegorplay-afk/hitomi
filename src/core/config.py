@@ -26,8 +26,13 @@ class ProxyConfig:
             return {}
 
 @dataclass
+class UserConfig:
+    USERS: list[int] = [int(x) for x in os.getenv("START_CHATS").split(',') if x.isdigit()] if os.getenv("START_CHATS") else []
+
+@dataclass
 class Config(
-    ProxyConfig
+    ProxyConfig,
+    UserConfig
 ):
     """
     Класс конфигурации приложения с настройками бота и парсинга.

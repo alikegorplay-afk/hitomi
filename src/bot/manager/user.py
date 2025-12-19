@@ -4,6 +4,7 @@ from loguru import logger
 from aiogram import Bot
 
 from ...manager.bossmanager import BossManager
+from ...core.config import config
 
 def create_content(domain: str, mangas: list) -> str:
     """Создаёт и возращает готовый текст
@@ -29,11 +30,14 @@ __all__ = [
 
 class UserManager:
     def __init__(self, bot: Bot, manager: BossManager):
-        self.users: set[int] = set()
+        self.users: set[int] = set(config.USERS)
         self.bot = bot
         self.manager = manager
         
     def add_user(self, user_id: int):
+        """Добавляет пользователя в список."""
+        if user_id in self.users:
+            return
         logger.info(f"Добавлен новый пользователь: {user_id}")
         self.users.add(user_id)
         

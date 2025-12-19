@@ -14,16 +14,16 @@ def sendnew_router(user_manager: UserManager) -> Router:
     router = Router()
 
     @router.message(Command("sendnew"))
-    async def sendnew_handler(msg: Message):
+    async def sendnew_handler(message: Message):
         """
         Обработчик команды /sendnew <url> — добавляет URL в список на рассмотрение.
         Если URL уже есть — уведомляет об этом.
         """
-        user_manager.add_user(msg.chat.id)
+        user_manager.add_user(message.chat.id)
         try:
-            command, url = msg.text.strip().split(maxsplit=1)
+            command, url = message.text.strip().split(maxsplit=1)
         except ValueError:
-            await msg.answer(
+            await message.answer(
                 "Пожалуйста, укажите команду в формате:\n<code>/sendnew https://example.com</code>",
                 parse_mode="HTML"
             )
@@ -37,13 +37,13 @@ def sendnew_router(user_manager: UserManager) -> Router:
             urls = []
 
         if url in urls:
-            await msg.answer("Этот URL уже добавлен на рассмотрение!")
+            await message.answer("Этот URL уже добавлен на рассмотрение!")
             return
 
         urls.append(url)
         async with aiofiles.open(config.save_path, 'w', encoding='utf-8') as f:
             await f.write(json.dumps(urls, ensure_ascii=False, indent=2))
 
-        await msg.answer("✅ URL успешно добавлен на рассмотрение!")
+        await message.answer("✅ URL успешно добавлен на рассмотрение!")
 
     return router
