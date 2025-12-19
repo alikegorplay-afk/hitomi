@@ -4,6 +4,7 @@ import asyncio
 from aiohttp import ClientSession
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
+from aiogram.client.session.aiohttp import AiohttpSession
 
 from ..manager.bossmanager import BossManager
 from .manager import UserManager
@@ -17,7 +18,9 @@ commands = [
 
 def get_bot(manager: BossManager) ->  tuple[Bot, Dispatcher, UserManager]:
     dp = Dispatcher()
-    bot = Bot(config.BOT_TOKEN)
+    session = AiohttpSession(proxy=(config.PROXY, config.get_proxy()["proxy_auth"])) if config.get_proxy() else None
+    
+    bot = Bot(config.BOT_TOKEN, session)
     user_manager  = UserManager(bot, manager)
     
     dp.include_routers(  # NOTE: Единый вход для добавление новых роутов.
