@@ -58,11 +58,11 @@ SCAN_INTERVAL=300
 ### 3. Запуск бота
 
 ```bash
-# Основной запуск
-python main.py
+# Создаём образ
+docker build -t telegram-bot .
 
-# Или с подробным логированием
-python main.py --verbose
+#Запускаем бота
+docker-compose up -d
 ```
 
 ## ⚙️ Основные команды бота
