@@ -88,7 +88,11 @@ class BaseSpider(ABC):
                         logger.success(f"Удалось получить данные (url={url}, status={response.status})")
                         return await response.text()
                 except aiohttp.ClientResponseError as e:
-                    logger.warning(f"Не удалось получить данные (status={e.status}, try-num={indx}, url={url})")
+                    if e.status == 404:
+                        logger.error(f"Страницы не существует (url={url})")
+                        return
+                    else:
+                        logger.warning(f"Не удалось получить данные (status={e.status}, try-num={indx}, url={url})")
                     
                 except Exception as e:
                     logger.error(f"Не удалось получит данные (try-num={indx}, error={e})")

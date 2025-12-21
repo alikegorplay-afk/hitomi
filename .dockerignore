@@ -1,0 +1,16 @@
+__pycache__
+*__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+logs.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+.DS_Store
+data/
