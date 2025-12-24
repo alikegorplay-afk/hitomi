@@ -35,7 +35,7 @@ def getnew_router(manager: BossManager, user_manager: UserManager):
         logger.info(f"Запрос на ручную проверку (chat_id={message.chat.id})")
         user_manager.add_user(message.chat.id)
         data = await manager.find_new()
-        if not all([True if x else False for x in data.values()]):
+        if not any(data.values()):
             await message.answer("На данный момент новых данных нет — всё уже обработано!")
             
         else:
